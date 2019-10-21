@@ -2,25 +2,18 @@
 # It takes in some data from Earth Engine and it outputs it as a CSV file in your Google Drive
 # I think you need to do the following before running this:
 # pip install earthengine-api
-# pip install tensorflow
-# pip install folium
 # In the command line, run: earthengine authenticate
 # - and log in with your Google account
 
 # Import the Earth Engine API and initialize it.
 import ee
-import tensorflow as tf
-import folium
-print(folium.__version__)
+# import folium
+# print(folium.__version__)
 
 # Define the URL format used for Earth Engine generated map tiles.
 EE_TILES = 'https://earthengine.googleapis.com/map/{mapid}/{{z}}/{{x}}/{{y}}?token={token}'
 
 ee.Initialize()
-
-tf.enable_eager_execution()
-print(tf.__version__)
-
 
 # Use these bands for prediction.
 bands = ['BurnDate', 'Uncertainty', 'FirstDay', 'LastDay']
