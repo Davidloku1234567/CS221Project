@@ -32,7 +32,7 @@ image = image_collection.filterDate('2018-01-01', '2018-12-31').median()
 
 # Change the following two lines to use your own training data.
 region = regions.california()
-labels = ee.FeatureCollection.randomPoints(region, 10000)
+labels = ee.FeatureCollection.randomPoints(region, 1000)
 
 
 # Sample the image at the points and add a random column.
@@ -54,7 +54,7 @@ testFilePrefix = 'Testing_demo_'
 # Create the tasks.
 trainingTask = ee.batch.Export.table.toDrive(
   collection=training,
-  description='Burned',
+  description='Burned_Area',
   fileFormat='CSV'
 )
 
@@ -79,7 +79,7 @@ trainingTask.start()
 # testingTask.start()
 
 # Print all tasks.
-print(ee.batch.Task.list())
+# print(ee.batch.Task.list())
 
 # Poll the training task until it's done.
 import time
