@@ -17,22 +17,45 @@ ee.Initialize()
 # Burned area data from https://developers.google.com/earth-engine/datasets/catalog/MODIS_006_MCD64A1
 
 TEMPERATURE = 'OREGONSTATE/PRISM/AN81d'
-PRECIPITATION = 'JAXA/GPM_L3/GSMaP/v6/operational'
+PRECIPITATION = 'OpenLandMap/CLM/CLM_PRECIPITATION_SM2RAIN_M/v01'
 ELEVATION = 'CGIAR/SRTM90_V4'
 LEAF_AREA = 'MODIS/006/MCD15A3H'
 SOIL_TYPE = 'CSP/ERGo/1_0/US/lithology'
 EVAPORATION = 'CAS/IGSNRR/PML/V2'
+HUMAN_MODIF = 'CSP/HM/GlobalHumanModification'
+FOREST = 'JAXA/ALOS/PALSAR/YEARLY/FNF'
 
 BURNED_AREA = 'MODIS/006/MCD64A1'
 
-image_collection = ee.ImageCollection(BURNED_AREA)
 
-# # The image input data is a 2018 cloud-masked median composite.
-image = image_collection.filterDate('2018-01-01', '2018-12-31').median()
+# INSTRUCTIONS
+# ------------------------------------
+# To make sure you're logged in, run: earthengine authenticate
+# Edit the DATA to be one of the values listed above
+# Edit NUMBER_OF_POINTS to be the number of data points you want
+# Edit FILE_NAME to be the name of the output file
+# run: python3 data_extract.py
+# The result will be a new CSV file in your Google Drive
+DATA = FOREST
+NUMBER_OF_POINTS = 10000
+FILE_NAME = 'Forest'
+# ------------------------------------
+
+
+if DATA in [ELEVATION, SOIL_TYPE, PRECIPITATION]:
+    image = ee.Image(DATA)  # Use this if the data is already an Image type
+else:
+    image_collection = ee.ImageCollection(DATA)  # Use this if the data is an ImageCollection
+    if DATA in [HUMAN_MODIF]:
+        image = image_collection.median()  # Use this for non-time based data
+    else:
+        # The image input data is a 2018 cloud-masked median composite.
+        # image = image_collection.filterDate('2018-01-01', '2018-12-31').median()  # Use this for time-based data
+        image = image_collection.filterDate('2017-01-01', '2017-12-31').median()  # Use this for time-based data
 
 # Change the following two lines to use your own training data.
 region = regions.california()
-labels = ee.FeatureCollection.randomPoints(region, 1000)
+labels = ee.FeatureCollection.randomPoints(region, NUMBER_OF_POINTS)
 
 
 # Sample the image at the points and add a random column.
@@ -47,16 +70,8 @@ training = sample
 trainFilePrefix = 'Training_demo_'
 testFilePrefix = 'Testing_demo_'
 
-# This is list of all the properties we want to export.
-# featureNames = list(bands)
-# featureNames.append(label)
-
 # Create the tasks.
-trainingTask = ee.batch.Export.table.toDrive(
-  collection=training,
-  description='Burned_Area',
-  fileFormat='CSV'
-)
+trainingTask = ee.batch.Export.table.toDrive(collection=training, description=FILE_NAME, fileFormat='CSV')
 
 # trainingTask = ee.batch.Export.table.toCloudStorage(
 #   collection=training,
@@ -85,5 +100,5 @@ trainingTask.start()
 import time
 while trainingTask.active():
   print('Polling for task (id: {}).'.format(trainingTask.id))
-  time.sleep(10)
+  time.sleep(30)
 print('Done with training export.')
