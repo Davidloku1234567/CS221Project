@@ -24,6 +24,7 @@ SOIL_TYPE = 'CSP/ERGo/1_0/US/lithology'
 EVAPORATION = 'CAS/IGSNRR/PML/V2'
 HUMAN_MODIF = 'CSP/HM/GlobalHumanModification'
 FOREST = 'JAXA/ALOS/PALSAR/YEARLY/FNF'
+RADIATION = 'IDAHO_EPSCOR/GRIDMET'
 
 BURNED_AREA = 'MODIS/006/MCD64A1'
 
@@ -36,9 +37,9 @@ BURNED_AREA = 'MODIS/006/MCD64A1'
 # Edit FILE_NAME to be the name of the output file
 # run: python3 data_extract.py
 # The result will be a new CSV file in your Google Drive
-DATA = FOREST
-NUMBER_OF_POINTS = 10000
-FILE_NAME = 'Forest'
+DATA = RADIATION
+NUMBER_OF_POINTS = 100000
+FILE_NAME = 'Radiation-100k'
 # ------------------------------------
 
 
@@ -100,5 +101,5 @@ trainingTask.start()
 import time
 while trainingTask.active():
   print('Polling for task (id: {}).'.format(trainingTask.id))
-  time.sleep(30)
+  time.sleep(120)
 print('Done with training export.')
