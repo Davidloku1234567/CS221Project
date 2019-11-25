@@ -9,7 +9,8 @@ files_to_combine = [
     'data/LeafArea-100k.csv',
     'data/Precipitation-100k.csv',
     'data/SoilType-100k.csv',
-    'data/Temperature-100k.csv'
+    'data/Temperature-100k.csv',
+    'data/Radiation-100k.csv'
 ]
 
 entire_dict = {}
