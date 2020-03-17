@@ -9,13 +9,13 @@ Our goal in this project is to develop machine learning models to predict future
 
 <img width="500" alt="Screen Shot 2020-03-16 at 8 19 07 PM" src="https://user-images.githubusercontent.com/3321825/76818820-ccc57e00-67c3-11ea-8b73-27cecc2dcb19.png">
 
-We used datasets from Google Earth Engine where data is collected from 9 satellite imagery and geospatial data sources. Given a latitude/longitude coordinate and date/time range, these sources provide information on temperature, precipitation, elevation, leaf area, soil type, human modification, forest area, radiation, and fire data. We sampled 100,000 random locations from within a bounding region of the State of California, and for each location we gathered a total of 45 features and 2 labels from 2017. The two labels indicate whether a fire has occurred, and the uncertainty/severity level of the fire.
+We use datasets from Google Earth Engine where data is collected from 9 satellite imagery and geospatial data sources. Given a latitude/longitude coordinate and date/time range, these sources provide information on temperature, precipitation, elevation, leaf area, soil type, human modification, forest area, radiation, and fire data. We sampled 100,000 random locations from within a bounding region of the State of California, and for each location we gathered a total of 45 features and 2 labels from 2017. The two labels indicate whether a fire has occurred, and the uncertainty/severity level of the fire.
 
 ## Methods
 
 Since we are interested in predicting future fires and the severity of those fires, we split our prediction task into 1) a fire/no-fire classification task and 2) a fire severity prediction task.
 
-<img width="300" alt="Screen Shot 2020-03-16 at 8 56 58 PM" src="https://user-images.githubusercontent.com/3321825/76820527-b241d380-67c8-11ea-816c-556c134deff9.png">
+<img width="250" alt="Screen Shot 2020-03-16 at 8 56 58 PM" src="https://user-images.githubusercontent.com/3321825/76820527-b241d380-67c8-11ea-816c-556c134deff9.png">
 
 The fire/no-fire classification task uses all 45 features to predict the fire/no-fire label for each location in the training set. However, because the number of no-fire cases greatly outnumbers the fire cases, we train using a smaller dataset consisting of a 50/50 distribution between fire and no-fire cases. This ensures that the model does not simply predict no-fire for every datapoint. After training the fire/no-fire classifier in this way, we then test it using a full dataset consisting of the natural distribution between fire and no-fire cases. 
 The fire severity prediction task also uses all 45 features to predict the fire uncertainty, although this model only trains using fire occurrence data points. The fire uncertainty is a metric from 1-100 (although most are between 1-20). Because we wanted precision and recall metrics that we could compare to the results of the fire/no-fire classifier and because we wanted to test similar models on both, we treated this prediction task as a classification task as well. 
@@ -24,7 +24,7 @@ The fire severity prediction task also uses all 45 features to predict the fire 
 
 For the fire/no-fire classification, we experimented with seven different models to compare the effectiveness of each: Logistic Regression, Decision Tree, Random Forest, Gradient Boosting, AdaBoost, SVM, and Ridge Classifier.
 
-Fire/no-fire model performance
+_Fire/no-fire model performance_
 
 Model | Fire precision | Fire recall | Fire F1 score | No-fire precision | No-fire recall | No-fire F1 score
 ---|---|---|---|---|---|---
@@ -39,7 +39,7 @@ Ridge Classifier| 0.13|0.75|0.21 |1.00 |0.98| 0.99
 
 We tested the following 7 models for effectiveness on the fire severity task: Logistic Regression, Decision Tree, Random Forest, Gradient Boosting, Multilayer Perceptron, K Nearest Neighbors, and Gaussian Process.
 
-Fire severity model performance
+_Fire severity model performance_
 Model | Accuracy |Precision|Recall|  F1 Score 
 ---| ---|---|---|---
 Logistic Regression |0.77 |0.23|0.40|0.27
@@ -53,12 +53,15 @@ K Neighbors |0.77 |0.38|0.44|0.40
 
 ## Model analysis
 
-Comparison of Gradient Boosting and Multilayer Perceptron (Models with optimal results)
-Fire severity classification using GBClassifier showed significant improvement relative to the classification using the traditional distance-based model, with ~62% increase in precision and ~15% in recall when training data using two- level pipelined system. Significant improvements in classification accuracy were observed for most fire uncertainties, with considerably less misclassification for high severity fires (uncertainty < 20). Though the precision and recall results are similar for GBClassifier and Multilayer Perceptron, GBClassifier performed better in terms of misclassification, which could be observed from the confusion matrix of fire uncertainty (Figure 4). The false predicted fire severity was much closer to the diagonal, while the results of Multilayer Perceptron were sparsely spread along the diagonal.
+Fire severity classification using GBClassifier showed significant improvement relative to the classification using the traditional distance-based model, with ~62% increase in precision and ~15% in recall when training data using a two-level pipelined system. Significant improvements in classification accuracy were observed for most fire uncertainties, with considerably less misclassification for high severity fires (uncertainty < 20). Though the precision and recall results are similar for GBClassifier and Multilayer Perceptron, GBClassifier performed better in terms of misclassification, which could be observed from the confusion matrix of fire uncertainty. The false predicted fire severity was much closer to the diagonal, while the results of Multilayer Perceptron were sparsely spread along the diagonal.
 
-Extreme Gradient Boosting
-The benefit of down-sampling no-fire data points further led us to search for a better pipeline model using auto ML tools. The generated optimal pipeline result demonstrated that single-level XGBClassifier was still preferred when we trained on compact no-fire dataset, but two-level either Random Forest-XGBClassifier or BernoulliNB- XGBClassifier were the better choice if more no-fire data points were included in training. That is, multi-level predictors can reveal more information when training dataset is imbalanced. Besides using a smaller no-fire dataset to balance the number of fire severity samples, this search result implies another way to resolve the sample imbalance is by stacking multiple classifiers.
-Comparison of Logistic Regression (Baseline), Gradient Boosting (Optimal Model) and Stacked Random Forest - XGBoost
+_Confusion matrices of selected models_
+<img width="1049" alt="Screen Shot 2020-03-16 at 9 29 57 PM" src="https://user-images.githubusercontent.com/3321825/76822118-53328d80-67cd-11ea-973c-f3e2800abd6a.png">
+
+Additionally, the below plot compares the decision surfaces learned by a Logistic Regression (first column), by a Gradient Boosting classifier (second column) and by a stacked RF-XGBoost classifier (third column). Here we picked these three representative models to compare as these represents Baseline (Logistic Regression), resulting Optimal Model (Gradient Boosting classifier) based on manual experimentation and resulting Optimal Model (stacked RandomForest- XGBoost) based on automated experimentation using TPOT.
+
+_Decision surfaces of selected models_
+<img width="1149" alt="Screen Shot 2020-03-16 at 9 29 28 PM" src="https://user-images.githubusercontent.com/3321825/76822088-4150ea80-67cd-11ea-8cd4-2da1eab44132.png">
 
 ## Feature analysis
 
