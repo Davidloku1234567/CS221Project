@@ -56,12 +56,12 @@ K Neighbors |0.77 |0.38|0.44|0.40
 Fire severity classification using GBClassifier showed significant improvement relative to the classification using the traditional distance-based model, with ~62% increase in precision and ~15% in recall when training data using a two-level pipelined system. Significant improvements in classification accuracy were observed for most fire uncertainties, with considerably less misclassification for high severity fires (uncertainty < 20). Though the precision and recall results are similar for GBClassifier and Multilayer Perceptron, GBClassifier performed better in terms of misclassification, which could be observed from the confusion matrix of fire uncertainty. The false predicted fire severity was much closer to the diagonal, while the results of Multilayer Perceptron were sparsely spread along the diagonal.
 
 _Confusion matrices of selected models_
-<img width="1049" alt="Screen Shot 2020-03-16 at 9 29 57 PM" src="https://user-images.githubusercontent.com/3321825/76822118-53328d80-67cd-11ea-973c-f3e2800abd6a.png">
+<img width="600" alt="Screen Shot 2020-03-16 at 9 29 57 PM" src="https://user-images.githubusercontent.com/3321825/76822118-53328d80-67cd-11ea-973c-f3e2800abd6a.png">
 
 Additionally, the below plot compares the decision surfaces learned by a Logistic Regression (first column), by a Gradient Boosting classifier (second column) and by a stacked RF-XGBoost classifier (third column). Here we picked these three representative models to compare as these represents Baseline (Logistic Regression), resulting Optimal Model (Gradient Boosting classifier) based on manual experimentation and resulting Optimal Model (stacked RandomForest- XGBoost) based on automated experimentation using TPOT.
 
 _Decision surfaces of selected models_
-<img width="1149" alt="Screen Shot 2020-03-16 at 9 29 28 PM" src="https://user-images.githubusercontent.com/3321825/76822088-4150ea80-67cd-11ea-8cd4-2da1eab44132.png">
+<img width="600" alt="Screen Shot 2020-03-16 at 9 29 28 PM" src="https://user-images.githubusercontent.com/3321825/76822088-4150ea80-67cd-11ea-8cd4-2da1eab44132.png">
 
 ## Feature analysis
 
